@@ -8,9 +8,7 @@ import {OraclePtax} from "../../src/OraclePtax.sol";
  *      Aqui 'forçamos' o estado que os testes antigos esperam.
  */
 contract MockOraclePtax is OraclePtax {
-    constructor(address _router, uint64 _subscriptionId)
-        OraclePtax(_router, _subscriptionId)
-    {
+    constructor(address _router, uint64 _subscriptionId) OraclePtax(_router, _subscriptionId) {
         // construtor vazio
     }
 
@@ -18,12 +16,7 @@ contract MockOraclePtax is OraclePtax {
      * @dev Sobrescreve requestData para NÃO chamar _sendRequest nem reverter.
      *      Apenas retorna um requestId fixo referente a "2025-01-19".
      */
-    function requestData(string memory /* dateString */)
-        external
-        pure
-        override
-        returns (bytes32)
-    {
+    function requestData(string memory /* dateString */ ) external pure override returns (bytes32) {
         // Simplesmente retorna o mesmo requestId
         bytes32 fixedRequestId = keccak256(abi.encodePacked("2025-01-19"));
         return fixedRequestId;
@@ -33,11 +26,7 @@ contract MockOraclePtax is OraclePtax {
      * @dev Exponibiliza a função interna _fulfillRequest,
      *      caso você precise chamar manualmente em algum teste.
      */
-    function fulfillRequestTest(
-        bytes32 requestId,
-        bytes memory response,
-        bytes memory err
-    ) public {
+    function fulfillRequestTest(bytes32 requestId, bytes memory response, bytes memory err) public {
         _fulfillRequest(requestId, response, err);
     }
 
@@ -53,8 +42,8 @@ contract MockOraclePtax is OraclePtax {
 
         // 1) Preenche lastURL, lastPath, lastData etc.
         lastURL = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/"
-                  "CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='2025-01-19'&"
-                  "$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao";
+            "CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='2025-01-19'&"
+            "$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao";
 
         lastPath = "data.value[0]?.cotacaoCompra";
         lastData = "2025-01-19"; // Os testes esperam esse valor fixo
@@ -75,8 +64,8 @@ contract MockOraclePtax is OraclePtax {
                     sender: address(this),
                     timestamp: 0,
                     url: "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/"
-                         "odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='2025-01-19'&"
-                         "$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao",
+                        "odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='2025-01-19'&"
+                        "$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao",
                     path: "data.value[0]?.cotacaoCompra",
                     data: "2025-01-19"
                 })
@@ -87,8 +76,8 @@ contract MockOraclePtax is OraclePtax {
                 sender: address(this),
                 timestamp: 0,
                 url: "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/"
-                     "odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='2025-01-19'&"
-                     "$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao",
+                    "odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='2025-01-19'&"
+                    "$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao",
                 path: "data.value[0]?.cotacaoCompra",
                 data: "2025-01-19"
             });

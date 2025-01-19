@@ -9,24 +9,23 @@ contract OraclePtaxTest is Test {
     MockOraclePtax public oracle;
 
     function setUp() public {
-        oracle = new MockOraclePtax(
-            0x1234567890123456789012345678901234567890,
-            1
-        );
+        oracle = new MockOraclePtax(0x1234567890123456789012345678901234567890, 1);
 
         // Preenche o estado que os testes antigos esperam
         oracle.setTestState();
     }
 
     function testSource() public view {
-        string memory expected = "const dateString = args[0];const url = `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateString}'&$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao`;const apiResponse = await Functions.makeHttpRequest({url: url,responseType: 'json'});if (apiResponse.error) {throw Error('Request failed');}const { data } = apiResponse;const value = data.value[0]?.cotacaoCompra || '0';return Functions.encodeString(value.toString());";
+        string memory expected =
+            "const dateString = args[0];const url = `https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='${dateString}'&$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao`;const apiResponse = await Functions.makeHttpRequest({url: url,responseType: 'json'});if (apiResponse.error) {throw Error('Request failed');}const { data } = apiResponse;const value = data.value[0]?.cotacaoCompra || '0';return Functions.encodeString(value.toString());";
         string memory actual = oracle.source();
         console.log(actual);
         assertEq(actual, expected);
     }
 
     function testLastURL() public view {
-        string memory expected = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='2025-01-19'&$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao";
+        string memory expected =
+            "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?@dataCotacao='2025-01-19'&$top=100&$format=json&$select=cotacaoCompra,cotacaoVenda,dataHoraCotacao";
         string memory actual = oracle.lastURL();
         console.log(actual);
         assertEq(actual, expected);
@@ -82,8 +81,10 @@ contract OraclePtaxTest is Test {
     }
 
     function testRequests() public view {
-        OraclePtax.RequestStatus memory expected = OraclePtax.RequestStatus(true, true, abi.encodePacked("4.123"), abi.encodePacked("Request failed"));
-        (bool fulfilled, bool exists, bytes memory response, bytes memory err) = oracle.requests(keccak256(abi.encodePacked("2025-01-19")));
+        OraclePtax.RequestStatus memory expected =
+            OraclePtax.RequestStatus(true, true, abi.encodePacked("4.123"), abi.encodePacked("Request failed"));
+        (bool fulfilled, bool exists, bytes memory response, bytes memory err) =
+            oracle.requests(keccak256(abi.encodePacked("2025-01-19")));
         OraclePtax.RequestStatus memory actual = OraclePtax.RequestStatus(fulfilled, exists, response, err);
         console.log(actual.fulfilled);
         console.log(actual.exists);
@@ -129,5 +130,4 @@ contract OraclePtaxTest is Test {
         console.logBytes32(actual);
         assertEq(actual, expected);
     }
-
 }
