@@ -8,10 +8,20 @@ import {FunctionsRequest} from "chainlink-brownie-contracts/contracts/src/v0.8/f
 contract OraclePtax is FunctionsClient {
     using FunctionsRequest for FunctionsRequest.Request;
 
+    uint32 private constant GAS_LIMIT = 300000;
+    bytes32 private constant DON_ID = 0x66756e2d6f7074696d69736d2d7365706f6c69612d3100000000000000000000;
+
     bytes32 public lastRequestId;
     bytes public lastResponse;
     bytes public lastError;
 
+    function donID() public pure returns (bytes32) {
+        return DON_ID;
+    }
+
+    function gasLimit() public pure returns (uint32) {
+        return GAS_LIMIT;
+    }
     struct RequestStatus {
         bool fulfilled;
         bool exists;
@@ -29,8 +39,6 @@ contract OraclePtax is FunctionsClient {
     );
 
     address public router;
-    bytes32 donID = 0x66756e2d6f7074696d69736d2d7365706f6c69612d3100000000000000000000;
-    uint32 gasLimit = 300000;
     uint64 public subscriptionId;
 
     string public source = string(
@@ -70,10 +78,10 @@ contract OraclePtax is FunctionsClient {
         router = _router;
         subscriptionId = functionsSubscriptionId;
     }
-
+    
     function requestData(
         string memory dateString
-    ) external returns (bytes32 requestId) {
+    ) external virtual returns (bytes32 requestId) {
         string[] memory args = new string[](1);
         args[0] = dateString;
 
@@ -85,8 +93,8 @@ contract OraclePtax is FunctionsClient {
         lastRequestId = _sendRequest(
             req._encodeCBOR(),
             subscriptionId,
-            gasLimit,
-            donID
+            gasLimit(),
+            donID()
         );
         lastURL = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia";
         lastPath = "cotacaoCompra";
