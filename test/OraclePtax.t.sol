@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import {Test, console} from "forge-std/Test.sol";
 import {OraclePtax} from "../src/OraclePtax.sol";
-import {MockOraclePtax} from "./mocks/MockOraclePtax.sol";
+import {MockOraclePtax} from "./mock/MockOraclePtax.sol";
 
 contract OraclePtaxTest is Test {
     MockOraclePtax public oracle;
