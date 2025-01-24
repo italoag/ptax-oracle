@@ -143,3 +143,4 @@ contract OraclePtax is FunctionsClient {
         return requestsAux;
     }
 }
+
